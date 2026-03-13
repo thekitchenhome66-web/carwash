@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AquaShine Car Wash</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --deep: #040d1a;
+    --navy: #071428;
+    --blue: #0057ff;
+    --cyan: #00c2ff;
+    --ice: #e8f4ff;
+    --white: #ffffff;
+    --muted: #7a93b0;
+    --card: #0b1f38;
+    --border: rgba(0,194,255,0.15);
+    --radius: 6px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--deep);
+    color: var(--ice);
+    overflow-x: hidden;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--navy); }
+  ::-webkit-scrollbar-thumb { background: var(--blue); border-radius: 3px; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 6%;
+    background: rgba(4,13,26,0.9);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 1.35rem;
+    letter-spacing: 0.04em;
+    color: var(--white);
+  }
+  .nav-logo-mark {
+    width: 34px; height: 34px;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+  }
+  .nav-logo span { color: var(--cyan); }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a {
+    text-decoration: none; color: rgba(232,244,255,0.65);
+    font-size: 0.85rem; font-weight: 500; letter-spacing: 0.06em;
+    text-transform: uppercase; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--cyan); }
+  .nav-cta {
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+    color: var(--white); text-decoration: none;
+    font-size: 0.82rem; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; padding: 10px 24px;
+    border-radius: var(--radius);
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .nav-cta:hover { opacity: 0.88; transform: translateY(-1px); }
+  @media (max-width: 680px) { .nav-links { display: none; } }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 120px 6% 80px;
+    position: relative; overflow: hidden;
+    gap: 48px;
+  }
+  @media (max-width: 820px) {
+    .hero { grid-template-columns: 1fr; text-align: center; padding-top: 110px; }
+    .hero-img-wrap { order: -1; }
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 70% 80% at 80% 50%, rgba(0,87,255,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 20% 80%, rgba(0,194,255,0.07) 0%, transparent 50%),
+      var(--deep);
+  }
+  .hero-bg-lines {
+    position: absolute; inset: 0; z-index: 0;
+    background-image:
+      repeating-linear-gradient(90deg, rgba(0,194,255,0.03) 0px, rgba(0,194,255,0.03) 1px, transparent 1px, transparent 80px),
+      repeating-linear-gradient(0deg, rgba(0,194,255,0.03) 0px, rgba(0,194,255,0.03) 1px, transparent 1px, transparent 80px);
+  }
+  .hero-content { position: relative; z-index: 2; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(0,194,255,0.1);
+    border: 1px solid rgba(0,194,255,0.25);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--cyan);
+    margin-bottom: 28px;
+    opacity: 0; animation: slideIn 0.7s 0.2s forwards;
+  }
+  .hero-badge::before { content: '●'; font-size: 0.5rem; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+  .hero h1 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(2.8rem, 6vw, 5.2rem);
+    line-height: 1.0;
+    letter-spacing: -0.01em;
+    color: var(--white);
+    margin-bottom: 22px;
+    opacity: 0; animation: slideIn 0.7s 0.35s forwards;
+  }
+  .hero h1 .gradient-text {
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-sub {
+    font-size: clamp(0.95rem, 1.6vw, 1.1rem);
+    color: var(--muted); font-weight: 300; line-height: 1.75;
+    max-width: 480px; margin-bottom: 44px;
+    opacity: 0; animation: slideIn 0.7s 0.5s forwards;
+  }
+  @media (max-width: 820px) { .hero-sub { margin: 0 auto 44px; } }
+  .hero-actions {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    opacity: 0; animation: slideIn 0.7s 0.65s forwards;
+  }
+  @media (max-width: 820px) { .hero-actions { justify-content: center; } }
+  .btn-primary {
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+    color: var(--white); text-decoration: none; border: none;
+    font-family: 'Outfit', sans-serif; font-weight: 600;
+    font-size: 0.95rem; padding: 16px 36px; border-radius: var(--radius);
+    cursor: pointer; letter-spacing: 0.04em;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 24px rgba(0,87,255,0.35);
+  }
+  .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(0,87,255,0.5); }
+  .btn-outline {
+    background: transparent; color: var(--ice); text-decoration: none;
+    border: 1px solid var(--border); font-family: 'Outfit', sans-serif;
+    font-weight: 500; font-size: 0.95rem; padding: 16px 32px;
+    border-radius: var(--radius); cursor: pointer; letter-spacing: 0.04em;
+    transition: border-color 0.2s, color 0.2s, transform 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--cyan); color: var(--cyan); transform: translateY(-3px); }
+
+  .hero-stats {
+    display: flex; gap: 36px; margin-top: 56px; flex-wrap: wrap;
+    opacity: 0; animation: slideIn 0.7s 0.8s forwards;
+  }
+  @media (max-width: 820px) { .hero-stats { justify-content: center; } }
+  .stat-num {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 2rem; color: var(--white); letter-spacing: -0.02em;
+  }
+  .stat-num span { color: var(--cyan); }
+  .stat-label { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; }
+
+  /* Hero image */
+  .hero-img-wrap {
+    position: relative; z-index: 2;
+    opacity: 0; animation: slideIn 0.9s 0.4s forwards;
+  }
+  .hero-img-frame {
+    position: relative; border-radius: 16px; overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: 0 24px 80px rgba(0,87,255,0.2), 0 0 0 1px rgba(0,194,255,0.1);
+    background: var(--card);
+  }
+  .hero-img-frame img {
+    width: 100%; display: block;
+    height: 500px; object-fit: cover;
+    filter: saturate(1.1) brightness(0.95);
+    background: var(--card);
+  }
+  @media (max-width: 820px) { .hero-img-frame img { height: 260px; } }
+  .hero-img-badge {
+    position: absolute; bottom: 20px; left: 20px;
+    background: rgba(4,13,26,0.85); backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .badge-icon { font-size: 1.6rem; }
+  .badge-text-top { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  .badge-text-bot { font-size: 1rem; font-weight: 600; color: var(--white); }
+  .hero-img-dot {
+    position: absolute; top: 20px; right: 20px; width: 10px; height: 10px;
+    background: var(--cyan); border-radius: 50%;
+    box-shadow: 0 0 12px var(--cyan); animation: pulse 2s infinite;
+  }
+
+  /* ── SECTION SHARED ── */
+  section { padding: 100px 6%; }
+  .section-tag {
+    display: inline-block;
+    font-size: 0.7rem; font-weight: 600; letter-spacing: 0.25em;
+    text-transform: uppercase; color: var(--cyan);
+    margin-bottom: 14px;
+  }
+  .section-title {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.8rem);
+    line-height: 1.05; letter-spacing: -0.01em;
+    color: var(--white); margin-bottom: 16px;
+  }
+  .section-sub {
+    font-size: 1rem; color: var(--muted); font-weight: 300;
+    line-height: 1.75; max-width: 520px; margin-bottom: 64px;
+  }
+
+  /* ── SERVICES ── */
+  #services { background: var(--navy); }
+  .packages-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .pkg-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px; padding: 36px 28px;
+    cursor: pointer; position: relative; overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+  }
+  .pkg-card::after {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+    transform: scaleX(0); transform-origin: left; transition: transform 0.35s;
+  }
+  .pkg-card:hover { transform: translateY(-6px); border-color: rgba(0,194,255,0.35); box-shadow: 0 20px 50px rgba(0,87,255,0.18); }
+  .pkg-card:hover::after { transform: scaleX(1); }
+  .pkg-card.popular {
+    border-color: rgba(0,194,255,0.4);
+    background: linear-gradient(145deg, #0b1f38, #091829);
+  }
+  .pkg-popular-tag {
+    position: absolute; top: 16px; right: 16px;
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+    color: var(--white); font-size: 0.65rem; font-weight: 700;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    padding: 4px 12px; border-radius: 100px;
+  }
+  .pkg-icon { font-size: 2.2rem; margin-bottom: 20px; }
+  .pkg-name {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 1.3rem; color: var(--white); margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+  .pkg-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.65; margin-bottom: 24px; }
+  .pkg-features { list-style: none; margin-bottom: 28px; display: flex; flex-direction: column; gap: 8px; }
+  .pkg-features li {
+    font-size: 0.83rem; color: rgba(232,244,255,0.75);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .pkg-features li::before { content: '✓'; color: var(--cyan); font-weight: 700; font-size: 0.8rem; }
+  .pkg-footer { display: flex; align-items: center; justify-content: space-between; }
+  .pkg-price {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 2rem; color: var(--white); letter-spacing: -0.02em;
+  }
+  .pkg-price sup { font-size: 1rem; vertical-align: super; color: var(--cyan); }
+  .pkg-book-btn {
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+    color: var(--white); border: none;
+    font-family: 'Outfit', sans-serif; font-weight: 600;
+    font-size: 0.8rem; letter-spacing: 0.08em;
+    padding: 10px 20px; border-radius: var(--radius);
+    cursor: pointer; transition: opacity 0.2s, transform 0.2s;
+  }
+  .pkg-book-btn:hover { opacity: 0.85; transform: scale(1.04); }
+
+  /* ── WHY US ── */
+  #why { background: var(--deep); }
+  .why-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
+  }
+  @media (max-width: 820px) { .why-grid { grid-template-columns: 1fr; gap: 48px; } }
+  .why-img {
+    border-radius: 16px; overflow: hidden; position: relative;
+    border: 1px solid var(--border);
+    box-shadow: 0 16px 60px rgba(0,87,255,0.15);
+  }
+  .why-img img { width: 100%; height: 460px; object-fit: cover; display: block; }
+  @media (max-width: 820px) { .why-img img { height: 260px; } }
+  .why-features { display: flex; flex-direction: column; gap: 28px; margin-top: 40px; }
+  .why-item {
+    display: flex; gap: 20px; align-items: flex-start;
+    padding: 20px; border-radius: 10px;
+    border: 1px solid transparent;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .why-item:hover { background: var(--card); border-color: var(--border); }
+  .why-item-icon {
+    width: 48px; height: 48px; flex-shrink: 0;
+    background: linear-gradient(135deg, rgba(0,87,255,0.2), rgba(0,194,255,0.1));
+    border: 1px solid rgba(0,194,255,0.2);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+  }
+  .why-item-text h4 {
+    font-weight: 600; font-size: 1rem; color: var(--white); margin-bottom: 6px;
+  }
+  .why-item-text p { font-size: 0.87rem; color: var(--muted); line-height: 1.65; }
+
+  /* ── GALLERY ── */
+  #gallery { background: var(--navy); }
+  .gallery-mosaic {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: 230px 230px;
+    gap: 12px;
+  }
+  .g-item { border-radius: 10px; overflow: hidden; position: relative; }
+  .g-item:nth-child(1) { grid-column: 1 / 5; grid-row: 1 / 3; }
+  .g-item:nth-child(2) { grid-column: 5 / 9; grid-row: 1 / 2; }
+  .g-item:nth-child(3) { grid-column: 9 / 13; grid-row: 1 / 2; }
+  .g-item:nth-child(4) { grid-column: 5 / 8; grid-row: 2 / 3; }
+  .g-item:nth-child(5) { grid-column: 8 / 13; grid-row: 2 / 3; }
+  @media (max-width: 700px) {
+    .gallery-mosaic { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+    .g-item { grid-column: auto !important; grid-row: auto !important; min-height: 160px; }
+  }
+  .g-item img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    transition: transform 0.6s ease, filter 0.4s;
+    filter: brightness(0.88) saturate(1.1);
+  }
+  .g-item:hover img { transform: scale(1.06); filter: brightness(1) saturate(1.3); }
+  .g-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(4,13,26,0.5) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  /* ── PROCESS ── */
+  #process { background: var(--deep); }
+  .process-steps {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0; position: relative;
+  }
+  .process-steps::before {
+    content: '';
+    position: absolute; top: 36px; left: 10%; right: 10%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), var(--border), transparent);
+  }
+  @media (max-width: 600px) { .process-steps::before { display: none; } }
+  .step {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    padding: 0 20px 0;
+  }
+  .step-num {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 1.5rem; color: var(--cyan);
+    margin-bottom: 24px; position: relative; z-index: 1;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .step:hover .step-num { border-color: var(--cyan); box-shadow: 0 0 24px rgba(0,194,255,0.3); }
+  .step h4 { font-weight: 600; font-size: 1rem; color: var(--white); margin-bottom: 10px; }
+  .step p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+
+  /* ── LOCATION ── */
+  #location { background: var(--navy); }
+  .location-wrap {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start;
+  }
+  @media (max-width: 820px) { .location-wrap { grid-template-columns: 1fr; } }
+  .map-box {
+    border-radius: 16px; overflow: hidden; position: relative;
+    border: 1px solid var(--border);
+    box-shadow: 0 16px 50px rgba(0,87,255,0.15);
+    min-height: 380px;
+  }
+  .map-box img { width: 100%; height: 380px; object-fit: cover; display: block; filter: saturate(0.6) brightness(0.7); }
+  .map-box-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, transparent 40%, rgba(4,13,26,0.7));
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 12px;
+  }
+  .map-pin-icon { font-size: 3rem; filter: drop-shadow(0 0 12px rgba(0,194,255,0.6)); }
+  .map-pin-label {
+    background: rgba(4,13,26,0.85); backdrop-filter: blur(10px);
+    border: 1px solid var(--border); border-radius: 8px; padding: 10px 20px;
+    font-size: 0.88rem; font-weight: 600; color: var(--white); letter-spacing: 0.05em;
+  }
+  .map-note { font-size: 0.72rem; color: var(--muted); }
+  .location-info { display: flex; flex-direction: column; gap: 32px; }
+  .info-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 24px;
+  }
+  .info-card-label {
+    font-size: 0.68rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--cyan); margin-bottom: 10px; font-weight: 600;
+  }
+  .info-card p { font-size: 0.95rem; color: rgba(232,244,255,0.8); line-height: 1.65; }
+  .hours-table { width: 100%; border-collapse: collapse; }
+  .hours-table tr { border-bottom: 1px solid rgba(0,194,255,0.07); }
+  .hours-table tr:last-child { border-bottom: none; }
+  .hours-table td { padding: 9px 0; font-size: 0.88rem; color: rgba(232,244,255,0.75); }
+  .hours-table td:last-child { text-align: right; color: var(--cyan); font-weight: 600; }
+
+  /* ── CONTACT ── */
+  #contact { background: var(--deep); }
+  .contact-wrap {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start;
+  }
+  @media (max-width: 820px) { .contact-wrap { grid-template-columns: 1fr; gap: 48px; } }
+  .contact-channels { display: flex; flex-direction: column; gap: 14px; margin-top: 40px; }
+  .ch-btn {
+    display: flex; align-items: center; gap: 16px;
+    padding: 18px 22px; border-radius: 10px;
+    text-decoration: none; border: none; cursor: pointer;
+    font-family: 'Outfit', sans-serif; font-weight: 500;
+    transition: transform 0.2s, filter 0.2s;
+  }
+  .ch-btn:hover { transform: translateX(6px); filter: brightness(1.1); }
+  .ch-btn .ch-icon { font-size: 1.4rem; width: 36px; text-align: center; }
+  .ch-btn .ch-text { display: flex; flex-direction: column; }
+  .ch-btn .ch-name { font-size: 0.95rem; font-weight: 600; }
+  .ch-btn .ch-hint { font-size: 0.75rem; opacity: 0.7; margin-top: 1px; }
+  .ch-whatsapp { background: #1da851; color: #fff; }
+  .ch-wechat   { background: #07C160; color: #fff; }
+  .ch-email    { background: var(--card); color: var(--ice); border: 1px solid var(--border); }
+  .ch-phone    { background: linear-gradient(90deg, var(--blue), var(--cyan)); color: #fff; }
+
+  .contact-right { }
+  .contact-highlight {
+    background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 40px;
+  }
+  .contact-highlight h3 {
+    font-family: 'Archivo Black', sans-serif; font-size: 1.5rem; color: var(--white); margin-bottom: 12px;
+  }
+  .contact-highlight p { font-size: 0.9rem; color: var(--muted); line-height: 1.7; margin-bottom: 28px; }
+  .contact-direct { display: flex; flex-direction: column; gap: 14px; }
+  .direct-item {
+    display: flex; align-items: center; gap: 14px;
+    font-size: 0.9rem; color: rgba(232,244,255,0.8);
+  }
+  .direct-item-icon {
+    width: 40px; height: 40px; flex-shrink: 0;
+    background: linear-gradient(135deg, rgba(0,87,255,0.2), rgba(0,194,255,0.1));
+    border: 1px solid rgba(0,194,255,0.2); border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; font-size: 1rem;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--navy);
+    border-top: 1px solid var(--border);
+    padding: 40px 6%;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 20px;
+  }
+  .footer-logo {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 1.2rem; color: var(--white);
+  }
+  .footer-logo span { color: var(--cyan); }
+  .footer-copy { font-size: 0.78rem; color: var(--muted); }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a {
+    font-size: 0.78rem; color: var(--muted); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--cyan); }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(4,13,26,0.9); backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--card);
+    border: 1px solid rgba(0,194,255,0.2);
+    border-radius: 16px; padding: 40px 36px;
+    max-width: 480px; width: 100%;
+    position: relative;
+    transform: translateY(32px) scale(0.97);
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    box-shadow: 0 32px 80px rgba(0,87,255,0.25);
+  }
+  .modal-overlay.open .modal { transform: translateY(0) scale(1); }
+  .modal-close {
+    position: absolute; top: 16px; right: 20px;
+    background: none; border: none; color: var(--muted);
+    font-size: 1.5rem; cursor: pointer; transition: color 0.2s; line-height: 1;
+  }
+  .modal-close:hover { color: var(--white); }
+  .modal-tag { font-size: 0.68rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--cyan); margin-bottom: 8px; font-weight: 600; }
+  .modal-title {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 1.8rem; color: var(--white); margin-bottom: 4px;
+  }
+  .modal-price {
+    font-size: 1.3rem; color: var(--cyan); font-weight: 700; margin-bottom: 28px;
+  }
+  .modal-divider { border: none; border-top: 1px solid var(--border); margin-bottom: 24px; }
+  .modal-subtitle { font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; font-weight: 600; }
+  .modal-btns { display: flex; flex-direction: column; gap: 12px; }
+  .modal-ch {
+    display: flex; align-items: center; gap: 14px;
+    padding: 15px 20px; border-radius: 10px;
+    text-decoration: none; border: none; cursor: pointer;
+    font-family: 'Outfit', sans-serif; font-weight: 500; width: 100%; text-align: left;
+    transition: transform 0.2s, filter 0.2s;
+  }
+  .modal-ch:hover { transform: translateX(5px); filter: brightness(1.1); }
+  .modal-ch .icon { font-size: 1.2rem; width: 30px; text-align: center; }
+  .modal-ch .lbl { display: flex; flex-direction: column; }
+  .modal-ch .lbl b { font-size: 0.92rem; }
+  .modal-ch .lbl small { font-size: 0.72rem; opacity: 0.7; font-weight: 400; }
+  .m-whatsapp { background: #1da851; color: #fff; }
+  .m-wechat   { background: #07C160; color: #fff; }
+  .m-email    { background: rgba(255,255,255,0.05); color: var(--ice); border: 1px solid var(--border); }
+  .m-phone    { background: linear-gradient(90deg, var(--blue), var(--cyan)); color: #fff; }
+  .wechat-panel {
+    display: none; margin-top: 14px;
+    background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px; text-align: center;
+  }
+  .wechat-panel.show { display: block; }
+  .wechat-qr-box {
+    width: 130px; height: 130px; margin: 0 auto 12px;
+    background: var(--deep); border: 1px solid var(--border); border-radius: 8px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 6px; color: var(--muted); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .wechat-qr-box span { font-size: 2rem; }
+  .wechat-id-text { font-size: 0.9rem; font-weight: 600; color: var(--white); margin-bottom: 4px; }
+  .wechat-sub { font-size: 0.75rem; color: var(--muted); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .reveal {
+    opacity: 0; transform: translateY(28px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-mark">💧</div>
+    Aqua<span>Shine</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#why">Why Us</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#location">Location</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#services" class="nav-cta">Book Now</a>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-bg-lines"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">Now Open 7 Days a Week</div>
+    <h1>Your Car<br>Deserves<br><span class="gradient-text">The Best.</span></h1>
+    <p class="hero-sub">Professional hand wash, deep interior cleaning, and full detailing packages — all delivered with speed, care, and precision.</p>
+    <div class="hero-actions">
+      <a href="#services" class="btn-primary">View Packages</a>
+      <a href="#contact" class="btn-outline">Contact Us</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">5K<span>+</span></div>
+        <div class="stat-label">Cars Washed</div>
+      </div>
+      <div>
+        <div class="stat-num">4.9<span>★</span></div>
+        <div class="stat-label">Avg. Rating</div>
+      </div>
+      <div>
+        <div class="stat-num">8<span>yr</span></div>
+        <div class="stat-label">In Business</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-img-wrap">
+    <div class="hero-img-frame">
+      <img src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=900&auto=format&fit=crop&q=85" alt="Clean luxury car after wash" loading="eager" onerror="this.style.background='var(--card)';this.style.minHeight='500px'">
+      <div class="hero-img-badge">
+        <div class="badge-icon">✨</div>
+        <div>
+          <div class="badge-text-top">Showroom Finish</div>
+          <div class="badge-text-bot">Every Single Time</div>
+        </div>
+      </div>
+      <div class="hero-img-dot"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SERVICES ── -->
+<section id="services">
+  <p class="section-tag reveal">Packages</p>
+  <h2 class="section-title reveal">Pick Your Wash</h2>
+  <p class="section-sub reveal">From a quick refresh to a full transformation — we've got the perfect package for every car and every budget.</p>
+  <div class="packages-grid" id="packagesGrid"></div>
+</section>
+
+<!-- ── WHY US ── -->
+<section id="why">
+  <div class="why-grid">
+    <div class="why-img reveal">
+      <img src="https://images.unsplash.com/photo-1601362840469-51e4d8d58785?w=800&auto=format&fit=crop&q=80" alt="Professional car detailing" loading="lazy" onerror="this.style.background='var(--card)'">
+    </div>
+    <div class="reveal reveal-delay-1">
+      <p class="section-tag">Why AquaShine</p>
+      <h2 class="section-title">We Go Further Than Just Clean</h2>
+      <div class="why-features">
+        <div class="why-item">
+          <div class="why-item-icon">⚡</div>
+          <div class="why-item-text">
+            <h4>Fast Turnaround</h4>
+            <p>Most washes completed in under 30 minutes without sacrificing quality.</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-item-icon">🌿</div>
+          <div class="why-item-text">
+            <h4>Eco-Friendly Products</h4>
+            <p>Biodegradable soaps and water-recycling systems that protect the planet.</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-item-icon">🛡️</div>
+          <div class="why-item-text">
+            <h4>Paint-Safe Guarantee</h4>
+            <p>Microfibre cloths and soft-touch techniques that never scratch your finish.</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-item-icon">🏅</div>
+          <div class="why-item-text">
+            <h4>Trained Professionals</h4>
+            <p>Every team member is certified and trained in the latest detailing techniques.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── GALLERY ── -->
+<section id="gallery">
+  <p class="section-tag reveal">Our Work</p>
+  <h2 class="section-title reveal">Before &amp; After Gallery</h2>
+  <p class="section-sub reveal">Real results from real cars. See the AquaShine difference for yourself.</p>
+  <div class="gallery-mosaic reveal">
+    <div class="g-item">
+      <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&auto=format&fit=crop&q=80" alt="Car exterior after full detail" loading="lazy" onerror="this.parentElement.style.background='var(--card)'">
+      <div class="g-overlay"></div>
+    </div>
+    <div class="g-item">
+      <img src="https://images.unsplash.com/photo-1580274455191-1c62238fa333?w=700&auto=format&fit=crop&q=80" alt="Car wash foam and water" loading="lazy" onerror="this.parentElement.style.background='var(--card)'">
+      <div class="g-overlay"></div>
+    </div>
+    <div class="g-item">
+      <img src="https://images.unsplash.com/photo-1542362567-b07e54358753?w=700&auto=format&fit=crop&q=80" alt="Polished car close up" loading="lazy" onerror="this.parentElement.style.background='var(--card)'">
+      <div class="g-overlay"></div>
+    </div>
+    <div class="g-item">
+      <img src="https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=700&auto=format&fit=crop&q=80" alt="Interior car cleaning detail" loading="lazy" onerror="this.parentElement.style.background='var(--card)'">
+      <div class="g-overlay"></div>
+    </div>
+    <div class="g-item">
+      <img src="https://images.unsplash.com/photo-1563720223523-3e6a4b8a5f37?w=800&auto=format&fit=crop&q=80" alt="Luxury SUV after wash" loading="lazy" onerror="this.parentElement.style.background='var(--card)'">
+      <div class="g-overlay"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROCESS ── -->
+<section id="process">
+  <p class="section-tag reveal" style="text-align:center">How It Works</p>
+  <h2 class="section-title reveal" style="text-align:center;margin:0 auto 16px">Simple. Fast. Spotless.</h2>
+  <p class="section-sub reveal" style="text-align:center;margin:0 auto 64px">Getting your car cleaned has never been easier — four steps to a showroom shine.</p>
+  <div class="process-steps reveal">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h4>Choose a Package</h4>
+      <p>Browse our services and select the wash that fits your needs and budget.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h4>Book Your Slot</h4>
+      <p>Message us via WhatsApp, WeChat, or call to secure your appointment time.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h4>Drop Off Your Car</h4>
+      <p>Arrive at our location and our team takes care of everything from there.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <h4>Drive Away Shining</h4>
+      <p>Pick up your spotless, freshly detailed vehicle and enjoy the ride.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── LOCATION ── -->
+<section id="location">
+  <p class="section-tag reveal">Find Us</p>
+  <h2 class="section-title reveal">Our Location</h2>
+  <div class="location-wrap">
+    <div class="map-box reveal">
+      <img src="https://images.unsplash.com/photo-1486325212027-8081e485255e?w=900&auto=format&fit=crop&q=80" alt="Map location" loading="lazy" onerror="this.style.background='var(--card)'">
+      <div class="map-box-overlay">
+        <div class="map-pin-icon">📍</div>
+        <div class="map-pin-label">456 Clean Street, Your City</div>
+        <div class="map-note">Replace with a Google Maps embed</div>
+      </div>
+    </div>
+    <div class="location-info reveal reveal-delay-1">
+      <div class="info-card">
+        <div class="info-card-label">Address</div>
+        <p>456 Clean Street<br>Your City, State 00000</p>
+      </div>
+      <div class="info-card">
+        <div class="info-card-label">Opening Hours</div>
+        <table class="hours-table">
+          <tr><td>Monday – Friday</td><td>8:00 AM – 7:00 PM</td></tr>
+          <tr><td>Saturday</td><td>8:00 AM – 6:00 PM</td></tr>
+          <tr><td>Sunday</td><td>9:00 AM – 5:00 PM</td></tr>
+        </table>
+      </div>
+      <div class="info-card">
+        <div class="info-card-label">Phone</div>
+        <p>+1 (555) 123-4567</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ── -->
+<section id="contact">
+  <div class="contact-wrap">
+    <div>
+      <p class="section-tag reveal">Contact</p>
+      <h2 class="section-title reveal">Book Your Wash Today</h2>
+      <p class="section-sub reveal" style="margin-bottom:0">Reach us instantly on your favourite platform. We respond fast and always confirm your slot.</p>
+      <div class="contact-channels reveal">
+        <a class="ch-btn ch-whatsapp" href="https://wa.me/PHONENUMBER?text=Hello%20I%20want%20to%20book%20a%20car%20wash%20service" target="_blank">
+          <span class="ch-icon">💬</span>
+          <span class="ch-text"><span class="ch-name">WhatsApp</span><span class="ch-hint">Quick reply guaranteed</span></span>
+        </a>
+        <a class="ch-btn ch-wechat" href="#" id="contactWechat">
+          <span class="ch-icon">💚</span>
+          <span class="ch-text"><span class="ch-name">WeChat</span><span class="ch-hint">Scan QR or search our ID</span></span>
+        </a>
+        <a class="ch-btn ch-email" href="mailto:your@email.com?subject=Car%20Wash%20Booking&body=Hello%20I%20want%20to%20book%20a%20car%20wash%20service">
+          <span class="ch-icon">✉️</span>
+          <span class="ch-text"><span class="ch-name">Email</span><span class="ch-hint">your@email.com</span></span>
+        </a>
+        <a class="ch-btn ch-phone" href="tel:+15551234567">
+          <span class="ch-icon">📞</span>
+          <span class="ch-text"><span class="ch-name">Call Us</span><span class="ch-hint">+1 (555) 123-4567</span></span>
+        </a>
+      </div>
+    </div>
+    <div class="contact-right reveal reveal-delay-2">
+      <div class="contact-highlight">
+        <h3>Walk-Ins Always Welcome</h3>
+        <p>No appointment? No problem. Pull up any time during business hours and we'll get you cleaned up and back on the road ASAP.</p>
+        <div class="contact-direct">
+          <div class="direct-item"><div class="direct-item-icon">📍</div>456 Clean Street, Your City</div>
+          <div class="direct-item"><div class="direct-item-icon">⏰</div>Open 7 days · 8am–7pm weekdays</div>
+          <div class="direct-item"><div class="direct-item-icon">📞</div>+1 (555) 123-4567</div>
+          <div class="direct-item"><div class="direct-item-icon">✉️</div>your@email.com</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-logo">Aqua<span>Shine</span> Car Wash</div>
+  <div class="footer-links">
+    <a href="#services">Services</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <div class="footer-copy">© 2025 AquaShine Car Wash. All rights reserved.</div>
+</footer>
+
+<!-- ── BOOKING MODAL ── -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" role="dialog" aria-modal="true">
+    <button class="modal-close" id="modalClose">✕</button>
+    <div class="modal-tag">Book This Package</div>
+    <div class="modal-title" id="modalPkgName">Full Detail</div>
+    <div class="modal-price" id="modalPkgPrice">$89</div>
+    <hr class="modal-divider">
+    <div class="modal-subtitle">Choose how to book</div>
+    <div class="modal-btns">
+      <a class="modal-ch m-whatsapp" id="mWhatsApp" href="#" target="_blank">
+        <span class="icon">💬</span>
+        <span class="lbl"><b>WhatsApp</b><small>Send a message instantly</small></span>
+      </a>
+      <button class="modal-ch m-wechat" id="mWechatBtn">
+        <span class="icon">💚</span>
+        <span class="lbl"><b>WeChat</b><small>View QR code &amp; ID</small></span>
+      </button>
+      <a class="modal-ch m-email" id="mEmail" href="#">
+        <span class="icon">✉️</span>
+        <span class="lbl"><b>Email Us</b><small>Booking request via email</small></span>
+      </a>
+      <a class="modal-ch m-phone" href="tel:+15551234567">
+        <span class="icon">📞</span>
+        <span class="lbl"><b>Call Us</b><small>+1 (555) 123-4567</small></span>
+      </a>
+    </div>
+    <div class="wechat-panel" id="wechatPanel">
+      <div class="wechat-qr-box"><span>🟩</span>QR Placeholder</div>
+      <div class="wechat-id-text">WeChat ID: AquaShineWash</div>
+      <div class="wechat-sub">Search our ID or scan the QR in WeChat</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ── SCROLL REVEAL — declared FIRST so it's available everywhere ── */
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  /* Observe all existing .reveal elements */
+  document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
+
+  /* ── PACKAGES DATA ── */
+  var packages = [
+    {
+      icon: '🚿', name: 'Express Wash', price: 12, popular: false,
+      desc: 'Quick exterior rinse and dry — perfect for a fast refresh on the go.',
+      features: ['Exterior rinse & foam wash', 'High-pressure rinse', 'Air-dry finish', 'Window wipe-down']
+    },
+    {
+      icon: '✨', name: 'Classic Clean', price: 25, popular: false,
+      desc: 'A thorough hand wash inside and out with tyre shine and window polish.',
+      features: ['Hand wash exterior', 'Interior vacuum', 'Window cleaning', 'Tyre shine', 'Air freshener']
+    },
+    {
+      icon: '💎', name: 'Premium Detail', price: 59, popular: true,
+      desc: 'Our most popular package — full interior and exterior detailing to showroom standard.',
+      features: ['Full exterior hand wash', 'Clay bar treatment', 'Interior deep clean', 'Leather conditioning', 'Tyre dressing', 'Engine bay clean']
+    },
+    {
+      icon: '🏆', name: 'Ultimate Package', price: 99, popular: false,
+      desc: 'The complete transformation — wax, polish, ceramic coating prep, and everything in between.',
+      features: ['Everything in Premium', 'Machine polish', 'Carnauba wax coat', 'Ceramic spray sealant', 'Odour elimination', 'Headlight restoration']
+    },
+  ];
+
+  /* ── RENDER PACKAGES ── */
+  var grid = document.getElementById('packagesGrid');
+  packages.forEach(function(pkg) {
+    var card = document.createElement('div');
+    card.className = 'pkg-card reveal' + (pkg.popular ? ' popular' : '');
+    card.innerHTML =
+      (pkg.popular ? '<div class="pkg-popular-tag">Most Popular</div>' : '') +
+      '<div class="pkg-icon">' + pkg.icon + '</div>' +
+      '<div class="pkg-name">' + pkg.name + '</div>' +
+      '<div class="pkg-desc">' + pkg.desc + '</div>' +
+      '<ul class="pkg-features">' + pkg.features.map(function(f){ return '<li>' + f + '</li>'; }).join('') + '</ul>' +
+      '<div class="pkg-footer">' +
+        '<div class="pkg-price"><sup>$</sup>' + pkg.price + '</div>' +
+        '<button class="pkg-book-btn">Book Now →</button>' +
+      '</div>';
+    card.addEventListener('click', function() { openModal(pkg); });
+    grid.appendChild(card);
+    observer.observe(card); /* safe — observer already defined above */
+  });
+
+  /* ── MODAL ── */
+  var overlay = document.getElementById('modalOverlay');
+  var WA_NUM  = 'PHONENUMBER';
+  var EMAIL   = 'your@email.com';
+
+  function openModal(pkg) {
+    document.getElementById('modalPkgName').textContent  = pkg.name;
+    document.getElementById('modalPkgPrice').textContent = '$' + pkg.price;
+    var msg = encodeURIComponent('Hello, I\'d like to book the "' + pkg.name + '" package ($' + pkg.price + ').');
+    document.getElementById('mWhatsApp').href = 'https://wa.me/' + WA_NUM + '?text=' + msg;
+    document.getElementById('mEmail').href    = 'mailto:' + EMAIL + '?subject=Booking: ' + pkg.name + '&body=' + msg;
+    document.getElementById('wechatPanel').classList.remove('show');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
+
+  document.getElementById('mWechatBtn').addEventListener('click', function() {
+    document.getElementById('wechatPanel').classList.toggle('show');
+  });
+
+  document.getElementById('contactWechat').addEventListener('click', function(e) {
+    e.preventDefault();
+    alert('WeChat ID: AquaShineWash\n\nSearch our ID in WeChat or visit us in store for the QR code.');
+  });
+</script>
+</body>
+</html>
